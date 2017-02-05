@@ -1,0 +1,51 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
+<!--
+  `<sync-time></sync-time>` server time sync
+  @demo demo.html
+-->
+<dom-module id="sync-time">
+  <template>
+    <template is="dom-if" if="[[test]]">
+      Server Time on load: [[serverTime]] Offset: [[serverTimeOffset]]
+    </template>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "sync-time",
+    properties:{
+      serverTime:{
+        computed:"getServerTime(serverTimeOffset)",
+      },
+      serverTimeOffset:{
+        value:false,
+      },
+    },
+    getServerTime: function(serverTimeOffset){
+      if (serverTimeOffset === false) {
+        var scripts = document.getElementsByTagName('script')
+        var URL = scripts[scripts.length - 1].src
+      
+        var clientTimestamp = Date.parse(new Date().toUTCString())
+        var xmlhttp = new XMLHttpRequest()
+        xmlhttp.open('HEAD', URL + '?noCache=' + Date.now(), false)
+        xmlhttp.send()
+        var serverDateStr = xmlhttp.getResponseHeader('Date')
+        var serverTimestamp = Date.parse(new Date(Date.parse(serverDateStr)).toUTCString())
+      
+        var serverClientRequestDiffTime = serverTimestamp - clientTimestamp
+        var nowTimeStamp = Date.parse(new Date().toUTCString())
+      
+        var serverClientResponseDiffTime = nowTimeStamp - serverTimestamp
+        var responseTime = (serverClientRequestDiffTime - nowTimeStamp + clientTimestamp - serverClientResponseDiffTime) / 2
+      
+        this.serverTimeOffset = (serverClientResponseDiffTime - responseTime)
+      }
+      
+      var date = new Date()
+      date.setTime(date.getTime() + serverTimeOffset)
+      return date
+    },
+  })
+</script>

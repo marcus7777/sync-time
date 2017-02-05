@@ -1,0 +1,13 @@
+{
+  "name": "sync-time",
+  "version": "1.0.0",
+  "description": "\n    \n    \n    \n  ",
+  "main": "sync-time.html",
+  "keywords": [
+    "polymer",
+    "web-components"
+  ],
+  "dependencies": {
+    "polymer": "polymer/polymer#~1.7.1"
+  }
+}
